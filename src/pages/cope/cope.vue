@@ -175,7 +175,7 @@ export default {
       })
       this.getCropperBase64(true).then(data => {
         wx.request({
-          url: 'https://aip.baidubce.com/rest/2.0/ocr/v1/business_license?access_token=24.7bc4555b4ed495f59da16bc849259096.2592000.1528294762.282335-11198649',
+          url: 'https://aip.baidubce.com/rest/2.0/ocr/v1/accurate_basic?access_token=24.7bc4555b4ed495f59da16bc849259096.2592000.1528294762.282335-11198649',
           header: {'Content-Type': 'application/x-www-form-urlencoded'},
           method: 'post',
           data: {

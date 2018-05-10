@@ -1,7 +1,7 @@
 <template>
   <div class="info-page">
     <h3>一共 {{info.words_result_num}} 条</h3>
-    <p :key="value.id" v-for="(name, value) in info.words_result">{{name - value}}</p>
+    <p :key="item.id" v-for="item in info.words_result">{{item.words}}</p>
   </div>
 </template>
 
@@ -12,6 +12,7 @@
   flex-flow: column nowrap;
   height: 100%;
   box-sizing: border-box;
+  padding: 10px;
 }
 
 </style>
@@ -39,7 +40,7 @@ export default {
     const data = query.data
     const info = this.info = JSON.parse(data)
     console.log('没传过来?', info)
-    // info.words_result.forEach((e, i) => (e.id = '_' + i))
+    info.words_result.forEach((e, i) => (e.id = '_' + i))
   },
 
   created () {
