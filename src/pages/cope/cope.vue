@@ -1,15 +1,27 @@
 <template>
     <div class="cope-page">
         <div class="lice-box"
+            @touchstart.stop="ts"
+            @touchmove.stop="tm"
+            @touchend.stop="te"
             :style="{
                 width: option.width + 'px',
                 height: option.height + 'px',
             }"
         >
+        <div
+        class="selection-layer"
+        :style="{
+            width: option.cut.suitWidth + 'px',
+            height: option.cut.suitHeight + 'px',
+            transform: transformer,
+            '-webkit-transform': transformer,
+            transformOrigin: 'left top'
+        }"
+        >
+            <info-selector></info-selector>
+        </div>
             <div class="lice-shade"
-                @touchstart.prevent.stop="ts"
-                @touchmove.prevent.stop="tm"
-                @touchend.prevent.stop="te"
                 :style="{
                     borderWidth: option.cut.x + 'px'
                 }"
@@ -19,6 +31,7 @@
                 <span class="axis axis-3"></span>
                 <span class="axis axis-4"></span>
             </div>
+
             <div
             class="lice-cut"
             :style="{
@@ -30,7 +43,6 @@
                 transformOrigin: 'left top'
             }"
             >
-            <info-selector></info-selector>
                 <image class="img"
                 :disable-scroll="true"
                 :src="option.imgSrc"
@@ -64,6 +76,12 @@
             margin: 10px;
             position: relative;
             box-sizing: border-box;
+            .selection-layer {
+                position: absolute;
+                left: 0;
+                top: 0;
+                z-index: 9;
+            }
             .lice-shade {
                 position: absolute;
                 border-style: solid;
@@ -178,8 +196,8 @@
                     imgSrc: '',
                     width,  // 画布宽度
                     height, // 画布高度
-                    scale: 2.5, // 最大缩放倍数
-                    zoom: 8, // 缩放系数
+                    scale: 2, // 最大缩放倍数
+                    zoom: 4, // 缩放系数
                     newScale: 1,
                     imgLeft: 0,
                     imgTop: 0,
