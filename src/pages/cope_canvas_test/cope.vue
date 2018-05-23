@@ -1,41 +1,21 @@
 <template>
     <div class="cope-page">
-        <div class="lice-box"
+        <div
+        class="lice-pic"
+        >
+        <canvas class="scale-area"
+            canvas-id="__cropper_id__"
+            @touchstart="ts"
+            @touchmove="tm"
+            @touchend="te"
+            :disable-scroll="true"
             :style="{
                 width: option.width + 'px',
                 height: option.height + 'px',
+                background: 'rgba(0, 0, 0, .8)'
             }"
         >
-            <div class="lice-shade"
-                @touchstart.prevent.stop="ts"
-                @touchmove.prevent.stop="tm"
-                @touchend.prevent.stop="te"
-                :style="{
-                    borderWidth: option.cut.x + 'px'
-                }"
-            >
-                <span class="axis axis-1"></span>
-                <span class="axis axis-2"></span>
-                <span class="axis axis-3"></span>
-                <span class="axis axis-4"></span>
-            </div>
-            <div
-            class="lice-cut"
-            :style="{
-                width: option.cut.suitWidth + 'px',
-                height: option.cut.suitHeight + 'px',
-                transform: transformer,
-                '-webkit-transform': transformer,
-                background: 'rgba(0, 0, 0, .8)',
-                transformOrigin: 'left top'
-            }"
-            >
-            <info-selector></info-selector>
-                <image class="img"
-                :disable-scroll="true"
-                :src="option.imgSrc"
-                ></image>
-            </div>
+        </canvas>
         </div>
         <div class="c-tool">
           <button @click.prevent="loadLice" class="icon-btn" plain hover-class="btn-hover">
@@ -49,76 +29,28 @@
     </div>
 </template>
 
+
 <style lang="less" scoped>
     .cope-page {
         display: flex;
         flex-flow: column nowrap;
         height: 100%;
         justify-content: center;
-        .lice-box {
-            // flex-grow: 1;
+        .lice-pic {
+            flex-grow: 1;
+            display: flex;
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            // border: dashed 1px #333;
-            margin: 10px;
-            position: relative;
-            box-sizing: border-box;
-            .lice-shade {
-                position: absolute;
-                border-style: solid;
-                box-sizing: border-box;
-                border-color:rgba(0, 0, 0, .5);
-                width: 100%;
-                height: 100%;
-                .axis {
-                    position: absolute;
-                    width: 10px;
-                    height: 10px;
-                    border:solid 3px;
-                    &-1 {
-                        border-color: #fff transparent transparent #fff;
-                        top: -3px;
-                        left: -3px;
-                    }
-                    &-2 {
-                        border-color: #fff #fff transparent transparent;
-                        top: -3px;
-                        right: -3px;
-                    }
-                    &-3 {
-                        border-color: transparent #fff #fff transparent ;
-                        bottom: -3px;
-                        right: -3px;
-                    }
-                    &-4 {
-                        border-color: transparent transparent #fff #fff;
-                        bottom: -3px;
-                        left: -3px;
-                    }
-                }
+            canvas {
+                border: dashed 1px #fff;
             }
-            .lice-cut {
-                position: absolute;
-                top: 0px;
-                left: 0px;
-                z-index: -1;
-                font-size: 0;
-                width: 100%;
-                height: 100%;
-                .img {
-                    height: 100%;
-                    width: 100%;
-                }
-            }
-
         }
         .c-tool {
             height: 60px;
             padding: 0 60px;
             padding-bottom: 10px;
             display: flex;
-            flex-grow: 1;
             flex-shrink: 0;
             justify-content: space-between;
             align-items: center;
@@ -164,8 +96,8 @@
 
 <script>
     import Reco from './reco'
-    import Selector from '@/components/selector'
-
+    // 小程序canvas必须有id
+    const CROP_ID = '__cropper_id__'
     // 获取一些屏幕参数
     const device = wx.getSystemInfoSync() // 获取设备信息
     const width = device.windowWidth - 20 // 示例为一个与屏幕等宽的正方形裁剪框
@@ -175,28 +107,19 @@
         data () {
             return {
                 option: {
-                    imgSrc: '',
+                    id: CROP_ID,
                     width,  // 画布宽度
                     height, // 画布高度
                     scale: 2.5, // 最大缩放倍数
                     zoom: 8, // 缩放系数
-                    newScale: 1,
-                    imgLeft: 0,
-                    imgTop: 0,
                     cut: {
-                        x: 15, // 裁剪框x轴起点
-                        y: 15, // 裁剪框y轴期起点
-                        width: width - 15 * 2, // 裁剪框宽度
-                        height: height - 15 * 2, // 裁剪框高度
-                        suitWidth: 0, // 缩放至cut宽度
-                        sutiHeight: 0 // 缩放至cut高度
+                    x: 20, // 裁剪框x轴起点
+                    y: 20, // 裁剪框y轴期起点
+                    width: width - 40, // 裁剪框宽度
+                    height: height - 40 // 裁剪框高度
                     }
                 }
             }
-        },
-
-        components: {
-            'info-selector': Selector
         },
 
         methods: {
@@ -224,19 +147,13 @@
                         console.log('取消载入图片了')
                     }
                 })
-            },
-
-            ondrag (imgLeft, imgTop, newScale) {
-                imgLeft && (this.option.imgLeft = imgLeft)
-                imgTop && (this.option.imgTop = imgTop)
-                newScale && (this.option.newScale = newScale)
             }
         },
 
         computed: {
             transformer () {
-                const {newScale, imgLeft, imgTop} = this.option
-                return 'scale3d(' + newScale + ',' + newScale + ',' + newScale + ') translate3d(' + imgLeft + 'px,' + imgTop + 'px, 0)'
+                const {newScale, imgLeft, imgTop} = this
+                return 'scale3d(' + newScale + ',' + newScale + ',' + newScale + ') translate3d(' + imgLeft + 'px,' + imgTop + 'px,0)'
             }
         },
 
@@ -245,10 +162,10 @@
         },
 
         mounted () {
-            this.option.ondrag = this.ondrag
             const reco = this.reco = new Reco(this.option)
             const query = this.$root.$mp.query
             const imgSrc = query.file
+            console.log('载入一张： ', query.file)
 
             reco.setImgSrc(imgSrc)
         }
