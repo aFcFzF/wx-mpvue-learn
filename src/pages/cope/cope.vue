@@ -74,6 +74,7 @@
             overflow: hidden;
             // border: dashed 1px #333;
             margin: 10px;
+            margin-bottom: 30px;
             position: relative;
             box-sizing: border-box;
             .selection-layer {
@@ -257,17 +258,17 @@
             },
 
             formatSetting (key, value, index) {
-                const r = this.scaleRatio
+                const r = this.option.cut.scaleRatio
                 const {top, left, width, height} = value.location
                 const calc = {
-                    scaleRatio: this.scaleRatio,
+                    scaleRatio: r,
                     itemkey: key,
-                    top: r > 0 ? top / r : top * r,
-                    left: r> 0 ? left / r : left * r,
-                    width: r > 0 ? width / r : width * r,
-                    height: r > 0 ? height / r : height * r
+                    top: Math.round(r > 0 ? top / r : top * r),
+                    left: Math.round(r > 0 ? left / r : left * r),
+                    width: Math.round(r > 0 ? width / r : width * r),
+                    height: Math.round(r > 0 ? height / r : height * r)
                 }
-                console.log('比率', r, '原始数据： ', value.location, '新数据: ' , calc)
+                console.log('比率', r, '原始数据： ', value.location, '新数据: ', calc)
                 return calc
             }
         },
@@ -288,7 +289,10 @@
             const reco = this.reco = new Reco(this.option)
             const query = this.$root.$mp.query
             let {file, recoInfo} = query
-            this.checkresult = JSON.parse(recoInfo).checkresult
+            // 只有setImg之后，才会计算比率，所以要回调
+            reco.onImageLoad = () => {
+                this.checkresult = JSON.parse(recoInfo).checkresult
+            }
             reco.setImgSrc(file)
         }
     }
