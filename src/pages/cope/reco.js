@@ -211,6 +211,7 @@ export default class {
         wx.getImageInfo({
             src,
             success (res) {
+                console.log('图像信息： ', res)
                 let innerAspectRadio = res.width / res.height
                 self.option.imgSrc = res.path
                 // 原始图像高宽比率，如果高大于宽，则宽是宽，高乘以比率
@@ -231,6 +232,8 @@ export default class {
 
                 self.option.cut.suitWidth = suitWidth
                 self.option.cut.suitHeight = suitHeight
+
+                self.option.cut.scaleRatio = res.width / suitWidth
 
                 self.updateGraph()
 

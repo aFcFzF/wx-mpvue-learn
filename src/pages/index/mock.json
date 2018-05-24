@@ -1,0 +1,49 @@
+{
+    "status": 0,
+    "msg": "图片上传有问题，数据出错",
+    "data": {
+        "callbackkey":2809051940,
+        "checkresult":{
+            "companyname":{
+                "name":"名称",
+                "location":{
+                    "left":10,
+                    "top":10,
+                    "width":30,
+                    "height":30
+                },
+                "words":"洛阳远见矿山设备有限公司"
+            },
+            "companyname1":{
+                "name":"名称",
+                "location":{
+                    "left":50,
+                    "top":10,
+                    "width":30,
+                    "height":30
+                },
+                "words":"洛阳远见矿山设备有限公司"
+            },
+            "companyname2":{
+                "name":"名称",
+                "location":{
+                    "left":50,
+                    "top":10,
+                    "width":30,
+                    "height":30
+                },
+                "words":"洛阳远见矿山设备有限公司"
+            },
+            "companyname3":{
+                "name":"名称",
+                "location":{
+                    "left":50,
+                    "top":10,
+                    "width":30,
+                    "height":30
+                },
+                "words":"洛阳远见矿山设备有限公司"
+            }
+        }
+    }
+}

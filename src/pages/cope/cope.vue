@@ -19,7 +19,7 @@
             transformOrigin: 'left top'
         }"
         >
-            <info-selector></info-selector>
+            <info-selector @change="change" v-for="(value, key) in checkresult" :setting="formatSetting(key, value, index)" :key="key"></info-selector>
         </div>
             <div class="lice-shade"
                 :style="{
@@ -183,7 +183,6 @@
 <script>
     import Reco from './reco'
     import Selector from '@/components/selector'
-
     // 获取一些屏幕参数
     const device = wx.getSystemInfoSync() // 获取设备信息
     const width = device.windowWidth - 20 // 示例为一个与屏幕等宽的正方形裁剪框
@@ -192,6 +191,8 @@
     export default {
         data () {
             return {
+                callbackkey: '',
+                checkresult: {},
                 option: {
                     imgSrc: '',
                     width,  // 画布宽度
@@ -207,7 +208,8 @@
                         width: width - 15 * 2, // 裁剪框宽度
                         height: height - 15 * 2, // 裁剪框高度
                         suitWidth: 0, // 缩放至cut宽度
-                        sutiHeight: 0 // 缩放至cut高度
+                        sutiHeight: 0, // 缩放至cut高度
+                        scaleRatio: 1 // 原始图片和在cut框的比率
                     }
                 }
             }
@@ -248,6 +250,25 @@
                 imgLeft && (this.option.imgLeft = imgLeft)
                 imgTop && (this.option.imgTop = imgTop)
                 newScale && (this.option.newScale = newScale)
+            },
+
+            change (posInfo) {
+                console.log('获取到了值: ', posInfo)
+            },
+
+            formatSetting (key, value, index) {
+                const r = this.scaleRatio
+                const {top, left, width, height} = value.location
+                const calc = {
+                    scaleRatio: this.scaleRatio,
+                    itemkey: key,
+                    top: r > 0 ? top / r : top * r,
+                    left: r> 0 ? left / r : left * r,
+                    width: r > 0 ? width / r : width * r,
+                    height: r > 0 ? height / r : height * r
+                }
+                console.log('比率', r, '原始数据： ', value.location, '新数据: ' , calc)
+                return calc
             }
         },
 
@@ -259,16 +280,16 @@
         },
 
         created () {
-            // const reco = this.reco = new Reco(this.option)
+
         },
 
         mounted () {
             this.option.ondrag = this.ondrag
             const reco = this.reco = new Reco(this.option)
             const query = this.$root.$mp.query
-            const imgSrc = query.file
-
-            reco.setImgSrc(imgSrc)
+            let {file, recoInfo} = query
+            this.checkresult = JSON.parse(recoInfo).checkresult
+            reco.setImgSrc(file)
         }
     }
 </script>

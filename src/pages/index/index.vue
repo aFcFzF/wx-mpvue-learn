@@ -47,6 +47,7 @@
 
 <script>
 import card from '@/components/card'
+import res from './mock.json'
 
 export default {
   data () {
@@ -73,9 +74,25 @@ export default {
         count: 1,
         // sizeType: 'origin',
         success (fileObj) {
-          wx.navigateTo({
-            url: '/pages/cope/main?file=' + fileObj.tempFilePaths[0]
+          wx.showLoading({
+            title: '数据请求中',
+            mask: true
           })
+
+          setTimeout(_ => {
+            if (res.status) {
+              wx.hideLoading()
+              return wx.showModal({
+                title: '错误信息',
+                content: res.msg,
+                showCancel: false
+              })
+            }
+            wx.hideLoading()
+            wx.navigateTo({
+              url: '/pages/cope/main?file=' + fileObj.tempFilePaths[0] + '&recoInfo=' + JSON.stringify(res.data)
+            })
+          }, 1000)
         },
         fail (a, b) {
           wx.showModal({
