@@ -1,35 +1,39 @@
 <template>
     <div class="cope-page">
         <div class="lice-box"
-            @touchstart.stop="ts"
-            @touchmove.stop="tm"
-            @touchend.stop="te"
             :style="{
                 width: option.width + 'px',
                 height: option.height + 'px',
             }"
         >
-        <div
-        class="selection-layer"
-        :style="{
-            width: option.cut.suitWidth + 'px',
-            height: option.cut.suitHeight + 'px',
-            transform: transformer,
-            '-webkit-transform': transformer,
-            transformOrigin: 'left top'
-        }"
-        >
-            <info-selector @change="change" v-for="(value, key) in checkresult" :setting="formatSetting(key, value, index)" :key="key"></info-selector>
-        </div>
-            <div class="lice-shade"
+            <axis :option="{
+                top: option.cut.y,
+                left: option.cut.x,
+                right: option.cut.x,
+                bottom: option.cut.borderBottomWidth,
+                rpxRate: rpxRate,
+                offsetPx: 3
+            }"/>
+
+            <!--这是四个遮罩-->
+            <div class="lice-shade top"></div>
+            <div class="lice-shade right"></div>
+            <div class="lice-shade left"></div>
+            <div class="lice-shade bottom"
                 :style="{
-                    borderWidth: option.cut.x + 'px'
+                    'min-height': option.cut.borderBottomWidth + 'px'
                 }"
             >
-                <span class="axis axis-1"></span>
-                <span class="axis axis-2"></span>
-                <span class="axis axis-3"></span>
-                <span class="axis axis-4"></span>
+                <scroll-view
+                    data-name="info-section"
+                    class="lice-info-layer"
+                    v-if="expand"
+                    scroll-y
+                    scroll-with-animation
+                >
+                    <div class="info-item" data-name="info-item" v-for="(value, key) in checkresult" :key="key">{{value.name + ': ' + value.words}}</div>
+                </scroll-view>
+                <div class="info-item" v-else>{{liceText}}</div>
             </div>
 
             <div
@@ -42,13 +46,28 @@
                 background: 'rgba(0, 0, 0, .8)',
                 transformOrigin: 'left top'
             }"
+            @touchstart.stop="ts"
+            @touchmove.stop="tm"
+            @touchend.stop="te"
             >
+                <div
+                class="selection-layer"
+                :style="{
+                    width: option.cut.suitWidth + 'px',
+                    height: option.cut.suitHeight + 'px'
+                }"
+                >
+                    <info-selector @change="change" v-for="(value, key) in checkresult" :setting="formatSetting(key, value, index)" :key="key"></info-selector>
+                </div>
+
                 <image class="img"
                 :disable-scroll="true"
                 :src="option.imgSrc"
                 ></image>
             </div>
+
         </div>
+
         <div class="c-tool">
           <button @click.prevent="loadLice" class="icon-btn" plain hover-class="btn-hover">
             <i class="icon reload " />重拍
@@ -68,60 +87,55 @@
         height: 100%;
         justify-content: center;
         .lice-box {
-            // flex-grow: 1;
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            // border: dashed 1px #333;
             margin: 10px;
-            margin-bottom: 30px;
             position: relative;
             box-sizing: border-box;
+            border-radius: 3px;
+
             .selection-layer {
                 position: absolute;
                 left: 0;
                 top: 0;
                 z-index: 9;
             }
+
             .lice-shade {
                 position: absolute;
-                border-style: solid;
-                box-sizing: border-box;
-                border-color:rgba(0, 0, 0, .5);
-                width: 100%;
-                height: 100%;
-                .axis {
-                    position: absolute;
-                    width: 10px;
-                    height: 10px;
-                    border:solid 3px;
-                    &-1 {
-                        border-color: #fff transparent transparent #fff;
-                        top: -3px;
-                        left: -3px;
-                    }
-                    &-2 {
-                        border-color: #fff #fff transparent transparent;
-                        top: -3px;
-                        right: -3px;
-                    }
-                    &-3 {
-                        border-color: transparent #fff #fff transparent ;
-                        bottom: -3px;
-                        right: -3px;
-                    }
-                    &-4 {
-                        border-color: transparent transparent #fff #fff;
-                        bottom: -3px;
-                        left: -3px;
-                    }
+                background-color:rgba(0, 0, 0, .6);
+                z-index: 8;
+                &.top {
+                    top: 0;
+                    left: 15px;
+                    height: 15px;
+                    right: 15px;
+                }
+                &.left {
+                    top: 0;
+                    left: 0;
+                    height: 100%;
+                    width: 15px;
+                }
+                &.right {
+                    right: 0;
+                    top: 0;
+                    height: 100%;
+                    width: 15px;
+                }
+                &.bottom {
+                    bottom: 0;
+                    left: 15px;
+                    right: 15px;
+                    padding: 20px;
                 }
             }
             .lice-cut {
                 position: absolute;
-                top: 0px;
-                left: 0px;
-                z-index: -1;
+                top: 0;
+                left: 0;
+                z-index: 1;
                 font-size: 0;
                 width: 100%;
                 height: 100%;
@@ -130,7 +144,21 @@
                     width: 100%;
                 }
             }
-
+            .lice-info-layer {
+                height: 100px;
+                line-height: 1.6;
+                z-index: 99;
+                width: 100%;
+                color: #fff;
+                font-size:12px;
+                &.expend {
+                    // background-color: rgba(0, 0, 0, 0.6);
+                }
+                .most-item {
+                    height: 100px;
+                    line-height: 1.6;
+                }
+            }
         }
         .c-tool {
             height: 60px;
@@ -184,16 +212,21 @@
 <script>
     import Reco from './reco'
     import Selector from '@/components/selector'
+    import LiceList from '@/components/licelist'
+    import Axis from './components/axis'
     // 获取一些屏幕参数
     const device = wx.getSystemInfoSync() // 获取设备信息
     const width = device.windowWidth - 20 // 示例为一个与屏幕等宽的正方形裁剪框
     const height = device.windowHeight - 100
-
+    const rpxRate = +(1 / (device.windowWidth / 750)).toFixed(2)
+    console.log('比率: ', device.windowWidth, rpxRate)
     export default {
         data () {
             return {
                 callbackkey: '',
                 checkresult: {},
+                liceText: '',
+                expand: true,
                 option: {
                     imgSrc: '',
                     width,  // 画布宽度
@@ -207,22 +240,26 @@
                         x: 15, // 裁剪框x轴起点
                         y: 15, // 裁剪框y轴期起点
                         width: width - 15 * 2, // 裁剪框宽度
-                        height: height - 15 * 2, // 裁剪框高度
+                        height: height - 55, // 裁剪框高度
+                        borderBottomWidth: 40, // 该值 + cut.y = cut.height 减去的数
                         suitWidth: 0, // 缩放至cut宽度
                         sutiHeight: 0, // 缩放至cut高度
                         scaleRatio: 1 // 原始图片和在cut框的比率
                     }
-                }
+                },
+                rpxRate
             }
         },
 
         components: {
-            'info-selector': Selector
+            'axis': Axis,
+            'info-selector': Selector,
+            'lice-list': LiceList
         },
 
         methods: {
             ts (e) {
-               this.reco.touchStart(e)
+                this.reco.touchStart(e)
             },
             tm (e) {
                 this.reco.touchMove(e)
@@ -230,21 +267,21 @@
             te (e) {
                 this.reco.touchEnd(e)
             },
-
             /**
              * 载入资质
             */
             loadLice () {
+                this.liceText = 'aabbcc'
                 // const self = this
-                wx.chooseImage({
-                    count: 1,
-                    success (fileObj) {
-                        console.log('又拍一张：', fileObj.tempFilePaths[0])
-                    },
-                    fail (a, b) {
-                        console.log('取消载入图片了')
-                    }
-                })
+                // wx.chooseImage({
+                //     count: 1,
+                //     success (fileObj) {
+                //         console.log('又拍一张：', fileObj.tempFilePaths[0])
+                //     },
+                //     fail (a, b) {
+                //         console.log('取消载入图片了')
+                //     }
+                // })
             },
 
             ondrag (imgLeft, imgTop, newScale) {
@@ -254,7 +291,10 @@
             },
 
             change (posInfo) {
-                console.log('获取到了值: ', posInfo)
+                console.log('获取到了值: ', this, posInfo, this.checkresult)
+                const itemkey = posInfo.itemkey
+                const {name, words} = this.checkresult[itemkey]
+                this.liceText = name + ': ' + words
             },
 
             formatSetting (key, value, index) {
@@ -268,7 +308,7 @@
                     width: Math.round(r > 0 ? width / r : width * r),
                     height: Math.round(r > 0 ? height / r : height * r)
                 }
-                console.log('比率', r, '原始数据： ', value.location, '新数据: ', calc)
+                // console.log('比率', r, '原始数据： ', value.location, '新数据: ', calc)
                 return calc
             }
         },

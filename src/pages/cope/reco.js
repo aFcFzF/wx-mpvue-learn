@@ -1,5 +1,5 @@
 /**
- * @file: touch.js
+ * @file: reco.js 选择页的交互
  * @author: afcfzf
  */
 
@@ -187,7 +187,7 @@ export default class {
     }
 
     updateGraph () {
-        console.log('缩放大小： ', this.newScale)
+        // console.log('缩放大小： ', this.newScale)
         this.option.imgLeft = this.imgLeft
         this.option.imgTop = this.imgTop
         this.option.newScale = this.newScale
@@ -211,7 +211,7 @@ export default class {
         wx.getImageInfo({
             src,
             success (res) {
-                console.log('图像信息： ', res)
+                // console.log('图像信息： ', res)
                 let innerAspectRadio = res.width / res.height
                 self.option.imgSrc = res.path
                 // 原始图像高宽比率，如果高大于宽，则宽是宽，高乘以比率

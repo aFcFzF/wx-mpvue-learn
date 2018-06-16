@@ -152,8 +152,8 @@
         },
 
         mounted () {
-            this.drag.x = this.setting.left
-            this.drag.y = this.setting.top
+            this.rectX = this.drag.x = this.setting.left
+            this.rectY = this.drag.y = this.setting.top
             this.drag.width = this.setting.width
             this.drag.height = this.setting.height
         }
