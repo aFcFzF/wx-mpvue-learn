@@ -3,14 +3,14 @@
     <div class="logo"></div>
     <div class="bottom">
       <!-- <button @click.prevent="captureLice" class="btn start">扫描资质文件</button> -->
-      <button hover-class="btn-hover" @click.prevent="chooseLice" class="btn start">扫描资质文件</button>
+      <button @click.prevent="chooseLice" class="btn start">扫描资质文件</button>
     </div>
   </div>
 </template>
 
 
 <style scoped lang="less">
-
+@import '~@/common/var.less';
 .start-page {
   display: flex;
   flex-flow: column nowrap;
@@ -33,13 +33,11 @@
 }
 
 .btn{
-  background-color: #3859F6;
+  .color-primary-btn();
   color: #fff;
   font-weight: bold;
   padding:0 30px;
-  &.btn-hover {
-    background-color: rgb(39, 69, 219);
-  }
+
 }
 
 </style>

@@ -2,12 +2,8 @@
  * @file: reco.js 选择页的交互
  * @author: afcfzf
  */
-
+/*eslint-disable*/
 const TOUCH_STATE = ['touchstarted', 'touchmoved', 'touchended']
-
-function firstLetterUpper (str) {
-    return str.charAt(0).toUpperCase() + str.slice(1)
-}
 
 export default class {
 
@@ -18,7 +14,6 @@ export default class {
     constructor (option) {
 
         this.option = option
-
         this.oldScale = 1
         this.rectX = 0
         this.rectY = 0

@@ -1,0 +1,28 @@
+
+// 全局定义颜色
+
+@color-primary: #4C8EFF;
+@color-primary-hover: rgb(52, 118, 233);
+@color-primary-border: solid 1px @color-primary-hover;
+@color-primary-shadow: 0 0 10px #D1E2FF;
+
+.color-primary-btn() {
+    background: #4C8EFF;
+    border: solid 1px rgb(52, 118, 233);
+    box-shadow: 0 0 10px #D1E2FF;
+    border-radius: 50px;
+    &.button-hover {
+        background: rgb(52, 118, 233);
+    }
+}
+
+.color-plain-btn() {
+    background: rgb(255, 255, 255);
+    border: solid 1px rgb(52, 118, 233);
+    box-shadow: 0 0 10px #D1E2FF;
+    border-radius: 50px;
+    color: @color-primary;
+    &.button-hover {
+        background: #eee;
+    }
+}
