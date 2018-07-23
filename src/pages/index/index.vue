@@ -3,7 +3,7 @@
     <div class="logo"></div>
     <div class="bottom">
       <!-- <button @click.prevent="captureLice" class="btn start">扫描资质文件</button> -->
-      <button @click.prevent="chooseLice" class="btn start">扫描资质文件</button>
+      <button @click.prevent="chooseLice" class="btn start">选择资质文件</button>
     </div>
   </div>
 </template>
@@ -45,7 +45,10 @@
 
 <script>
 import card from '@/components/card'
-import res from './mock.json'
+
+import config from '@/utils/config'
+
+import {selectAndUpload} from '@/utils/index'
 
 export default {
   data () {
@@ -65,43 +68,14 @@ export default {
         url: '/pages/capture/main'
       })
     },
-
     chooseLice () {
-      console.log('要选择')
-      wx.chooseImage({
-        count: 1,
-        // sizeType: 'origin',
-        success (fileObj) {
-          wx.showLoading({
-            title: '数据请求中',
-            mask: true
-          })
-
-          setTimeout(_ => {
-            if (res.status) {
-              wx.hideLoading()
-              return wx.showModal({
-                title: '错误信息',
-                content: res.msg,
-                showCancel: false
-              })
-            }
-            wx.hideLoading()
-            wx.navigateTo({
-              url: '/pages/cope/main?file=' + fileObj.tempFilePaths[0] + '&recoInfo=' + JSON.stringify(res.data)
-            })
-          }, 1000)
-        },
-        fail (a, b) {
-          wx.showModal({
-            title: '出错了',
-            content: '请联系管理员查看具体出错原因',
-            showCancel: false,
-            success (res) {
-              console.log(res)
-            }
-          })
-        }
+      selectAndUpload(config.domain.getDomain() + '/sendToAuthAjax', {callbackkey: this.callbackkey})
+      .then(data => {
+        if (data === false) return null
+        const {licePic, checkresult, callbackkey} = data
+        wx.navigateTo({
+            url: '/pages/cope/main?file=' + licePic + '&recoInfo=' + JSON.stringify({checkresult, callbackkey})
+        })
       })
     }
   },
