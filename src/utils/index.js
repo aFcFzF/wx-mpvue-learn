@@ -30,6 +30,9 @@ export function fetch (url, data) {
           url,
           method: 'post',
           data,
+          header: {
+            'content-type': 'application/x-www-form-urlencoded'
+          },
           success (res) {
               resolve(res)
           },
