@@ -44,7 +44,6 @@
 
 
 <script>
-import card from '@/components/card'
 
 import config from '@/utils/config'
 
@@ -57,13 +56,8 @@ export default {
     }
   },
 
-  components: {
-    card
-  },
-
   methods: {
     captureLice () {
-      console.log('要跳转')
       wx.navigateTo({
         url: '/pages/capture/main'
       })

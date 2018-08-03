@@ -138,7 +138,6 @@ export default {
     mounted () {
         const list = JSON.parse(this.$root.$mp.query.list)
         this.list = list
-        console.log('传回来的数据: ', list)
     }
 
 }

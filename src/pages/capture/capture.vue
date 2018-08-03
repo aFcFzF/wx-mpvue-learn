@@ -85,17 +85,12 @@
 
 
 <script>
-import card from '@/components/card'
 
 export default {
   data () {
     return {
       motto: 'Hello World'
     }
-  },
-
-  components: {
-    card
   },
 
   created () {

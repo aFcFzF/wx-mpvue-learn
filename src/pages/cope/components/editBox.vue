@@ -111,7 +111,6 @@ export default {
         }
     },
     mounted () {
-        console.log('mounted ???')
         setTimeout(() => (this.editable = true), 100)
     },
     methods: {
@@ -120,7 +119,6 @@ export default {
         },
 
         cancelHdl () {
-            console.log('取消了： ')
             this.editable = false
             this.cancel()
         }
